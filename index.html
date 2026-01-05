@@ -1,0 +1,1439 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DahabPlus</title>
+
+  <style>
+    :root{
+      --brandGreen:#3f8f4b;
+      --bg:#ffffff;
+      --text:#101214;
+      --muted:#6b7280;
+
+      --shadow:0 10px 24px rgba(0,0,0,.14);
+      --shadow2:0 18px 40px rgba(0,0,0,.24);
+
+      /* Typography */
+      --fw-heavy:650;
+      --fw-bold:600;
+      --fw-med:500;
+
+      --fs-section:14px;
+      --fs-label:10px;
+      --fs-body:12px;
+      --fs-sub:11px;
+      --fs-money:15px;
+
+      --fs-more-title:15px;
+      --fs-more-item:12px;
+      --fs-tile:11px;
+
+      /* Circles */
+      --circleAction:46px;
+      --circleTile:44px;
+      --circlePromo:28px;
+      --circleFab:62px;
+      --circleTopIcon:36px;
+
+      --pinIconBg: var(--brandGreen);
+
+      /* Desktop phone frame size */
+      --phoneW:390px;
+      --phoneH:844px;
+    }
+
+    *{box-sizing:border-box}
+    html, body { height:100%; }
+
+    body{
+      margin:0;
+      padding:12px;
+      font-family: Arial, sans-serif;
+      background:#f3f4f6;
+      color:var(--text);
+      font-size:var(--fs-body);
+      font-weight:var(--fw-med);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+    }
+
+    .phone{
+      width:var(--phoneW);
+      height:min(var(--phoneH), calc(100vh - 24px));
+      background:#fff;
+      border-radius:28px;
+      box-shadow:0 18px 50px rgba(0,0,0,.22);
+      overflow:hidden;
+      position:relative;
+    }
+
+    @media (max-width:480px){
+      body{ background:#fff; display:block; min-height:auto; padding:0; }
+      .phone{ width:100vw; height:100vh; border-radius:0; box-shadow:none; }
+    }
+
+    .app{
+      height:100%;
+      width:100%;
+      overflow:auto;
+      background:#fff;
+      padding-bottom:28px;
+      position:relative;
+    }
+
+    /* Header */
+    .header{
+      background:#fff;
+      padding:12px 12px 14px;
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .topLeft, .topRight{ display:flex; align-items:center; gap:10px; flex:0 0 auto; }
+    .topIcon{
+      width:var(--circleTopIcon);
+      height:var(--circleTopIcon);
+      border-radius:14px;
+      background:rgba(63,143,75,.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+    .brandCenter{ display:flex; align-items:center; justify-content:center; flex:1; min-width:0; }
+    .brandText{
+      color:var(--brandGreen);
+      font-weight:var(--fw-heavy);
+      font-size:18px;
+      letter-spacing:.2px;
+      line-height:1;
+      user-select:none;
+    }
+
+    /* Carousel */
+    .carouselArea{ padding:10px 12px 0; background:#fff; }
+    .carouselWrap{
+      display:flex;
+      gap:10px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      scrollbar-width:none;
+      -ms-overflow-style:none;
+      padding-bottom:6px;
+      scroll-snap-type:x mandatory;
+    }
+    .carouselWrap::-webkit-scrollbar{display:none;width:0;height:0;}
+
+    .walletCard{
+      min-width: calc(100% - 0px);
+      height:148px;
+      border-radius:18px;
+      background:var(--brandGreen);
+      color:#fff;
+      padding:14px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.12);
+      position:relative;
+      scroll-snap-align:start;
+      overflow:hidden;
+    }
+    .walletCard::after{
+      content:"";
+      position:absolute;
+      inset:-46px -66px auto auto;
+      width:240px;height:240px;
+      border-radius:50%;
+      background:rgba(255,255,255,.10);
+    }
+    .walletTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      position:relative;
+      z-index:1;
+      gap:10px;
+    }
+    .walletName{ font-weight:var(--fw-heavy); font-size:14px; opacity:.95; }
+    .walletBrand{ font-weight:var(--fw-heavy); font-size:20px; opacity:.95; white-space:nowrap; }
+    .walletMid{ margin-top:18px; position:relative; z-index:1; }
+    .walletLabel{ font-size:12px; opacity:.9; font-weight:var(--fw-bold); }
+    .walletBtn{
+      position:absolute;
+      right:14px;
+      bottom:14px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.24);
+      color:#fff;
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:var(--fw-heavy);
+      cursor:pointer;
+      z-index:1;
+      font-size:12px;
+    }
+
+    /* Action row */
+    .actions{
+      padding:10px 12px 6px;
+      display:flex;
+      justify-content:space-between;
+      gap:6px;
+      align-items:flex-start;
+    }
+    .action{
+      width:64px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      cursor:pointer;
+      user-select:none;
+    }
+    .circle{
+      width:var(--circleAction);
+      height:var(--circleAction);
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+    }
+    .label{
+      margin-top:6px;
+      font-size:var(--fs-label);
+      font-weight:var(--fw-bold);
+      color:#111;
+      text-transform:uppercase;
+      text-align:center;
+    }
+    .cMerchant{background:#29c6ad}
+    .cSubscriber{background:#ff5a5f}
+    .cTransfer{background:#f6c343}
+    .cRemit{background:#6c63ff}
+    .cMore{background:#111}
+
+    /* MORE popup */
+    .moreWrap{position:relative}
+    .morePopup{
+      position:absolute;
+      right:0;
+      top:82px;
+      width:320px;
+      max-width:92vw;
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 12px 30px rgba(0,0,0,.22);
+      padding:14px;
+      display:none;
+      z-index:80;
+    }
+    .morePopup.open{display:block}
+    .morePopup h3{
+      margin:0 0 10px;
+      font-size:var(--fs-more-title);
+      font-weight:var(--fw-heavy);
+      color:#000;
+    }
+    .groupBtn{
+      width:100%;
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid #eee;
+      background:#fafafa;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      cursor:pointer;
+      margin-top:10px;
+      font-weight:var(--fw-heavy);
+      color:#111;
+      font-size:var(--fs-more-item);
+    }
+    .groupBtn:hover{background:#f3f4f6}
+    .groupLeft{display:flex;align-items:center;gap:10px}
+    .pill{
+      width:26px;height:26px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:var(--fw-heavy);font-size:12px;
+    }
+    .p1{background:#1fa463}
+    .p2{background:#1f6feb}
+    .p3{background:#6c63ff}
+    .arrow{color:#666;font-size:13px}
+
+    /* Section headings */
+    .sectionHead{
+      padding:14px 12px 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .sectionTitle{
+      font-weight:var(--fw-heavy);
+      font-size:var(--fs-section);
+      letter-spacing:.2px;
+    }
+    .seeAll{
+      font-size:13px;
+      font-weight:var(--fw-heavy);
+      color:var(--brandGreen);
+      cursor:pointer;
+    }
+
+    /* Transactions */
+    .txRow{ padding:0 12px; }
+    .txItem{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:14px;
+      border-radius:18px;
+      background:#f3f4f6;
+    }
+    .txLeft{ display:flex; align-items:center; gap:10px; min-width:0; }
+    .txIcon{
+      width:48px;height:48px;
+      border-radius:18px;
+      background:#ff7b7b;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+    .txName{
+      font-weight:var(--fw-heavy);
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .txMeta{ margin-top:4px; font-size:var(--fs-sub); color:var(--muted); font-weight:var(--fw-med); }
+    .txRight{ text-align:right; flex:0 0 auto; }
+    .txAmt{ font-weight:var(--fw-heavy); font-size:var(--fs-money); }
+    .txDate{ margin-top:4px; font-size:var(--fs-sub); color:var(--muted); font-weight:var(--fw-med); }
+
+    /* DahabCards strip */
+    .promoStrip{ padding:14px 12px 0; }
+    .promoCard{
+      background:#2f2f2f;
+      border-radius:22px;
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:#fff;
+      box-shadow:0 10px 22px rgba(0,0,0,.16);
+    }
+    .promoLeft{ display:flex; align-items:center; gap:10px; min-width:0; }
+    .mcDot{
+      width:40px;height:24px;border-radius:10px;
+      background:linear-gradient(90deg,#ff4d4d 0 50%, #ffb020 50% 100%);
+      flex:0 0 auto;
+    }
+    .pTitle{ font-weight:var(--fw-heavy); font-size:16px; }
+    .pSub{
+      margin-top:5px;
+      color:#cfd3d8;
+      font-size:12px;
+      font-weight:var(--fw-med);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      max-width:60vw;
+    }
+    .promoGo{
+      width:var(--circlePromo);height:var(--circlePromo);border-radius:50%;
+      background:#fff;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+
+    /* Services grid */
+    .services{ padding:0 12px 10px; }
+    .servicesGrid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px 10px;
+      padding-top:12px;
+    }
+    .svc{text-align:center;cursor:pointer;user-select:none;}
+    .svcIcon{
+      width:50px;height:50px;border-radius:18px;
+      background:#e8f3ec;
+      display:flex;align-items:center;justify-content:center;
+      margin:0 auto;
+      color:var(--brandGreen);
+      font-size:20px;
+    }
+    .svcName{
+      margin-top:8px;
+      font-size:12px;
+      font-weight:var(--fw-heavy);
+      color:#111;
+    }
+
+    /* Floating + */
+    .fab{
+      position:absolute;
+      right:16px;
+      bottom:16px;
+      width:var(--circleFab);
+      height:var(--circleFab);
+      border-radius:50%;
+      background:var(--brandGreen);
+      box-shadow:0 14px 30px rgba(0,0,0,.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      z-index:50;
+    }
+
+    /* Modal */
+    .overlay{
+      position:absolute; inset:0;
+      background:rgba(0,0,0,.35);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      padding:18px;
+      z-index:999;
+    }
+    .overlay.open{display:flex}
+    .modal{
+      width:min(520px, 94vw);
+      background:#fff;
+      border-radius:18px;
+      box-shadow:var(--shadow2);
+      padding:14px 14px 16px;
+      max-height:80vh;
+      overflow:auto;
+    }
+    .modalTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+      position:sticky;
+      top:0;
+      background:#fff;
+      padding-bottom:8px;
+      z-index:2;
+    }
+    .modalTitle{
+      font-size:var(--fs-more-title);
+      font-weight:var(--fw-heavy);
+      color:#111;
+    }
+    .closeX{
+      width:36px;height:36px;border-radius:14px;
+      border:1px solid #eee;
+      background:#fff;
+      cursor:pointer;
+      font-weight:var(--fw-heavy);
+      font-size:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:14px 10px;
+      padding-top:6px;
+    }
+    .tile{ text-align:center; cursor:pointer; user-select:none; }
+    .tileCircle{
+      width:var(--circleTile);height:var(--circleTile);border-radius:50%;
+      margin:0 auto;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .tileName{
+      margin-top:8px;
+      font-size:var(--fs-tile);
+      font-weight:var(--fw-bold);
+      color:#333;
+      line-height:1.1;
+    }
+
+    /* PIN menu */
+    .pinMenu{ display:flex; flex-direction:column; gap:10px; padding-top:6px; }
+    .pinItem{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid #eee;
+      background:#fafafa;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      cursor:pointer;
+      font-weight:var(--fw-bold);
+      color:#111;
+      font-size:13px;
+    }
+    .pinItem:hover{background:#f3f4f6}
+    .pinLeftIcon{
+      width:38px;height:38px;border-radius:12px;
+      background:var(--pinIconBg);
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .pinLeftIcon svg{width:20px;height:20px; display:block}
+
+    /* Forms */
+    .form{ display:flex; flex-direction:column; gap:12px; padding-top:6px; }
+    .fieldLabel{ font-size:12px; font-weight:var(--fw-bold); color:#111; margin-bottom:6px; }
+    .select, .textInput{
+      width:100%;
+      height:44px;
+      border-radius:14px;
+      border:1px solid #eee;
+      background:#fafafa;
+      padding:0 12px;
+      font-weight:var(--fw-bold);
+      font-size:13px;
+      outline:none;
+    }
+    .btnPrimary{
+      height:46px;
+      border-radius:14px;
+      border:none;
+      background:var(--brandGreen);
+      color:#fff;
+      font-weight:var(--fw-heavy);
+      font-size:14px;
+      cursor:pointer;
+    }
+    .hint{
+      border:1px solid #eee;
+      background:#fafafa;
+      border-radius:14px;
+      padding:12px;
+      font-weight:var(--fw-med);
+      font-size:13px;
+      color:#111;
+      line-height:1.35;
+      display:none;
+    }
+
+    /* PIN boxes */
+    .pinBoxes{ display:flex; gap:10px; }
+    .pinBox{
+      width:44px; height:44px;
+      border-radius:14px;
+      border:1px solid #eee;
+      background:#fafafa;
+      text-align:center;
+      font-weight:var(--fw-heavy);
+      font-size:16px;
+      outline:none;
+    }
+
+    /* Confirmation tick */
+    .confirmRow{ display:flex; align-items:flex-start; gap:12px; }
+    .tickIcon{ width:34px; height:34px; flex:0 0 auto; }
+
+    /* Freeze results */
+    .freezeList{ display:flex; flex-direction:column; gap:10px; padding-top:6px; }
+    .freezeTx{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid #eee;
+      background:#fafafa;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .freezeTx:hover{background:#f3f4f6}
+    .freezeTxLeft{min-width:0;}
+    .freezeTxTop{ font-weight:var(--fw-heavy); font-size:13px; color:#111; margin-bottom:4px; }
+    .freezeTxMeta{
+      font-size:11px;
+      color:var(--muted);
+      font-weight:var(--fw-med);
+      line-height:1.25;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:320px;
+    }
+    .freezeRadio{
+      margin-top:2px;
+      width:18px;
+      height:18px;
+      accent-color: var(--brandGreen);
+      flex:0 0 auto;
+    }
+
+    /* Icon strokes */
+    svg{width:22px;height:22px; display:block}
+    .w{stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+    .wfill{fill:#fff; stroke:none;}
+    .g{stroke:var(--brandGreen); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+  </style>
+</head>
+
+<body>
+  <div class="phone">
+    <div class="app" id="appRoot">
+
+      <!-- HEADER -->
+      <div class="header">
+        <div class="topbar">
+          <div class="topLeft">
+            <div class="topIcon" title="Profile">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="g" cx="12" cy="8" r="4"></circle>
+                <path class="g" d="M4 20c0-4 4-6 8-6s8 2 8 6"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="brandCenter" aria-label="DahabPlus">
+            <div class="brandText">DahabPlus</div>
+          </div>
+
+          <div class="topRight">
+            <div class="topIcon" title="Notifications">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path class="g" d="M6 9a6 6 0 0 1 12 0v5l2 2H4l2-2V9z"></path>
+                <path class="g" d="M10 18a2 2 0 0 0 4 0"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAROUSEL -->
+      <div class="carouselArea">
+        <div class="carouselWrap">
+          <div class="walletCard">
+            <div class="walletTop">
+              <div class="walletName">DMT Account • HRGDxxxx</div>
+              <div class="walletBrand">Account</div>
+            </div>
+            <div class="walletMid">
+              <div class="walletLabel">Balance</div>
+              <div style="margin-top:8px;font-weight:var(--fw-heavy);font-size:20px;">********</div>
+            </div>
+            <button class="walletBtn">Check Balance</button>
+          </div>
+
+          <div class="walletCard" style="background:#2f8a45">
+            <div class="walletTop">
+              <div class="walletName">DBI Account • 102xxxxxx</div>
+              <div class="walletBrand">Account</div>
+            </div>
+            <div class="walletMid">
+              <div class="walletLabel">Balance</div>
+              <div style="margin-top:8px;font-weight:var(--fw-heavy);font-size:20px;">********</div>
+            </div>
+            <button class="walletBtn">Check Balance</button>
+          </div>
+
+          <div class="walletCard" style="background:#3f8f4b">
+            <div class="walletTop">
+              <div class="walletName">eDahab Wallet • 65xxxxxxx</div>
+              <div class="walletBrand">eDahab</div>
+            </div>
+            <div class="walletMid">
+              <div class="walletLabel">Balance</div>
+              <div style="margin-top:8px;font-weight:var(--fw-heavy);font-size:20px;">********</div>
+            </div>
+            <button class="walletBtn">Check Balance</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTION ROW -->
+      <div class="actions">
+        <div class="action" id="qaMerchant">
+          <div class="circle cMerchant" title="Merchant">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path class="w" d="M4 9l2-4h12l2 4"></path>
+              <path class="w" d="M6 9v10h12V9"></path>
+              <path class="w" d="M9 19v-6h6v6"></path>
+            </svg>
+          </div>
+          <div class="label">MERCHANT</div>
+        </div>
+
+        <div class="action" id="qaSubscriber">
+          <div class="circle cSubscriber" title="Subscriber">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle class="w" cx="12" cy="8" r="4"></circle>
+              <path class="w" d="M4 20c0-4 4-6 8-6s8 2 8 6"></path>
+            </svg>
+          </div>
+          <div class="label">SUBSCRIBER</div>
+        </div>
+
+        <div class="action">
+          <div class="circle cTransfer" title="Transfer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path class="w" d="M7 7h10"></path>
+              <path class="w" d="M13 4l4 3-4 3"></path>
+              <path class="w" d="M17 17H7"></path>
+              <path class="w" d="M11 20l-4-3 4-3"></path>
+            </svg>
+          </div>
+          <div class="label">TRANSFER</div>
+        </div>
+
+        <div class="action">
+          <div class="circle cRemit" title="Remit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path class="w" d="M3 11.5L21 3l-8.5 18-2.5-7L3 11.5z"></path>
+              <circle class="w" cx="18" cy="18" r="2"></circle>
+            </svg>
+          </div>
+          <div class="label">REMIT</div>
+        </div>
+
+        <div class="moreWrap">
+          <div class="action" id="moreBtn">
+            <div class="circle cMore" title="More">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="wfill" cx="7" cy="12" r="1.7"></circle>
+                <circle class="wfill" cx="12" cy="12" r="1.7"></circle>
+                <circle class="wfill" cx="17" cy="12" r="1.7"></circle>
+              </svg>
+            </div>
+            <div class="label">MORE</div>
+          </div>
+
+          <div class="morePopup" id="morePopup">
+            <h3>Services</h3>
+
+            <div class="groupBtn" data-group="edahab">
+              <div class="groupLeft">
+                <div class="pill p1">E</div>
+                <div>eDahab Services</div>
+              </div>
+              <div class="arrow">▸</div>
+            </div>
+
+            <div class="groupBtn" data-group="account">
+              <div class="groupLeft">
+                <div class="pill p2">A</div>
+                <div>Account Services</div>
+              </div>
+              <div class="arrow">▸</div>
+            </div>
+
+            <div class="groupBtn" data-group="remit">
+              <div class="groupLeft">
+                <div class="pill p3">R</div>
+                <div>Remittance Services</div>
+              </div>
+              <div class="arrow">▸</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRANSACTIONS -->
+      <div class="sectionHead">
+        <div class="sectionTitle">TRANSACTIONS</div>
+        <div class="seeAll">SEE ALL</div>
+      </div>
+
+      <div class="txRow">
+        <div class="txItem">
+          <div class="txLeft">
+            <div class="txIcon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path class="w" d="M7 3h7l3 3v15H7z"></path>
+                <path class="w" d="M9 10h6"></path>
+                <path class="w" d="M9 14h6"></path>
+              </svg>
+            </div>
+            <div class="txText">
+              <div class="txName">Payment Transaction</div>
+              <div class="txMeta">Reference • ******</div>
+            </div>
+          </div>
+          <div class="txRight">
+            <div class="txAmt">$ 40.00</div>
+            <div class="txDate">Nov 13, 2021</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DahabCards -->
+      <div class="promoStrip">
+        <div class="promoCard">
+          <div class="promoLeft">
+            <div class="mcDot"></div>
+            <div>
+              <div class="pTitle">DahabCards</div>
+              <div class="pSub">Shop online with ease</div>
+            </div>
+          </div>
+          <div class="promoGo" title="Open">
+            <svg viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px">
+              <path d="M10 7l6 5-6 5" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- SERVICES -->
+      <div class="sectionHead">
+        <div class="sectionTitle">SERVICES</div>
+        <div style="width:80px"></div>
+      </div>
+
+      <div class="services">
+        <div class="servicesGrid">
+          <div class="svc"><div class="svcIcon">⚡</div><div class="svcName">ELECTRICITY</div></div>
+          <div class="svc"><div class="svcIcon">💧</div><div class="svcName">WATER</div></div>
+          <div class="svc"><div class="svcIcon">⛽</div><div class="svcName">GAS</div></div>
+          <div class="svc"><div class="svcIcon">📱</div><div class="svcName">MIFI</div></div>
+
+          <div class="svc"><div class="svcIcon">🎓</div><div class="svcName">EDUCATION</div></div>
+          <div class="svc"><div class="svcIcon">💰</div><div class="svcName">FINANCE</div></div>
+          <div class="svc"><div class="svcIcon">📈</div><div class="svcName">INSURANCE</div></div>
+          <div class="svc"><div class="svcIcon">📞</div><div class="svcName">TELECOM</div></div>
+        </div>
+      </div>
+
+      <!-- Floating + -->
+      <div class="fab" title="New">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path class="w" d="M12 5v14M5 12h14"></path>
+        </svg>
+      </div>
+
+      <!-- Modal Overlay -->
+      <div class="overlay" id="overlay">
+        <div class="modal" id="modal" role="dialog" aria-modal="true">
+          <div class="modalTop">
+            <div class="modalTitle" id="modalTitle">Title</div>
+            <button class="closeX" id="closeModal" aria-label="Close">✕</button>
+          </div>
+          <div id="modalBody"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /* ========= ICONS ========= */
+    const ICONS = {
+      balance: `<svg viewBox="0 0 24 24"><path class="w" d="M4 7h16v12H4z"/><path class="w" d="M4 9h16"/><path class="w" d="M16 14h2"/><path class="w" d="M6 7l2-2h10l2 2"/></svg>`,
+      payMerchant: `<svg viewBox="0 0 24 24"><path class="w" d="M4 9l2-4h12l2 4"/><path class="w" d="M6 9v10h12V9"/><path class="w" d="M9 19v-6h6v6"/></svg>`,
+      sendMobile: `<svg viewBox="0 0 24 24"><circle class="w" cx="12" cy="8" r="4"/><path class="w" d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`,
+      statement: `<svg viewBox="0 0 24 24"><path class="w" d="M7 3h7l3 3v15H7z"/><path class="w" d="M9 10h6"/><path class="w" d="M9 14h6"/><path class="w" d="M9 18h6"/></svg>`,
+      pin: `<svg viewBox="0 0 24 24"><rect class="w" x="6" y="11" width="12" height="10" rx="2"/><path class="w" d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>`,
+      remove: `<svg viewBox="0 0 24 24"><path class="w" d="M6 7h12"/><path class="w" d="M9 7V5h6v2"/><path class="w" d="M8 7l1 14h6l1-14"/></svg>`,
+      freeze: `<svg viewBox="0 0 24 24"><rect class="w" x="4" y="7" width="16" height="10" rx="2"/><path class="w" d="M6 6l12 12"/><path class="w" d="M10 12h4"/></svg>`,
+      tick: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#22c55e"></circle><path d="M7 12.5l3 3 7-7" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>`,
+
+      changePin: `<svg viewBox="0 0 24 24"><circle class="w" cx="8" cy="12" r="3"></circle><path class="w" d="M11 12h10"></path><path class="w" d="M17 12v3"></path><path class="w" d="M14 12v2"></path></svg>`,
+      pinBar: `<svg viewBox="0 0 24 24"><rect class="w" x="6" y="11" width="12" height="10" rx="2"></rect><path class="w" d="M8 11V8a4 4 0 0 1 8 0v3"></path><path class="w" d="M5 5l14 14"></path></svg>`,
+      pinUnbar: `<svg viewBox="0 0 24 24"><rect class="w" x="6" y="11" width="12" height="10" rx="2"></rect><path class="w" d="M9 11V8a4 4 0 0 1 7 0"></path></svg>`,
+
+      fx: `<svg viewBox="0 0 24 24">
+              <path class="w" d="M7 7h10"></path>
+              <path class="w" d="M13 4l4 3-4 3"></path>
+              <path class="w" d="M17 17H7"></path>
+              <path class="w" d="M11 20l-4-3 4-3"></path>
+           </svg>`,
+
+      deposit: `<svg viewBox="0 0 24 24"><rect class="w" x="5" y="15" width="14" height="6" rx="2"/><path class="w" d="M12 3v10"/><path class="w" d="M8.5 9.5L12 13l3.5-3.5"/></svg>`,
+      withdraw: `<svg viewBox="0 0 24 24"><rect class="w" x="5" y="3" width="14" height="6" rx="2"/><path class="w" d="M12 21V11"/><path class="w" d="M8.5 14.5L12 11l3.5 3.5"/></svg>`,
+      acctTransfer: `<svg viewBox="0 0 24 24">
+        <path class="w" d="M7 7h10"></path>
+        <path class="w" d="M13 4l4 3-4 3"></path>
+        <path class="w" d="M17 17H7"></path>
+        <path class="w" d="M11 20l-4-3 4-3"></path>
+      </svg>`
+    };
+
+    /* ========= GROUPS ========= */
+    const GROUPS = {
+      edahab: {
+        title: "eDahab Services",
+        features: [
+          { name:"Wallet Balance", icon:"balance", color:"#1fa463" },
+          { name:"Pay Merchant", icon:"payMerchant", color:"#29c6ad" },
+          { name:"Send Mobile", icon:"sendMobile", color:"#ff5a5f" },
+          { name:"Currency Exchange", icon:"fx", color:"#10b981" },
+          { name:"eDahab Statement", icon:"statement", color:"#111" },
+          { name:"Manage PIN", icon:"pin", color:"#6c5ce7" },
+          { name:"Freeze wrong transfer", icon:"freeze", color:"#0ea5e9" },
+          { name:"Remove Wallet", icon:"remove", color:"#d32f2f" }
+        ]
+      },
+      account: {
+        title: "Account Services",
+        features: [
+          { name:"Account Balance", icon:"balance", color:"#1f6feb" },
+          { name:"Account Deposit", icon:"deposit", color:"#00b894" },
+          { name:"Account Withdrawal", icon:"withdraw", color:"#fdcb6e" },
+          { name:"Account Transfer", icon:"acctTransfer", color:"#10b981" },
+
+          { name:"Pay Merchant", icon:"payMerchant", color:"#29c6ad" },
+          { name:"Send Mobile", icon:"sendMobile", color:"#ff5a5f" },
+
+          /* ✅ Change PIN is present but INACTIVE */
+          { name:"Change PIN", icon:"pin", color:"#6c5ce7", inactive:true },
+
+          { name:"Account Statement", icon:"statement", color:"#111" },
+          { name:"Freeze wrong transfer", icon:"freeze", color:"#0ea5e9" },
+          { name:"Delete Account", icon:"remove", color:"#d32f2f" }
+        ]
+      },
+      remit: {
+        title: "Remittance Services",
+        features: [
+          { name:"Send Remittance", icon:"sendMobile", color:"#6c63ff" },
+          { name:"Remittance Statement", icon:"statement", color:"#111" }
+        ]
+      }
+    };
+
+    /* ========= MODAL + MORE ========= */
+    const moreBtn = document.getElementById("moreBtn");
+    const morePopup = document.getElementById("morePopup");
+
+    const overlay = document.getElementById("overlay");
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalBody = document.getElementById("modalBody");
+    const closeModalBtn = document.getElementById("closeModal");
+
+    function closeMore(){ morePopup.classList.remove("open"); }
+    function openModal(title, node){
+      modalTitle.textContent = title;
+      modalBody.innerHTML = "";
+      modalBody.appendChild(node);
+      overlay.classList.add("open");
+    }
+    function closeModal(){
+      overlay.classList.remove("open");
+      modalBody.innerHTML = "";
+    }
+
+    moreBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      morePopup.classList.toggle("open");
+    });
+    morePopup.addEventListener("click", (e)=>e.stopPropagation());
+
+    document.addEventListener("click", () => { closeMore(); });
+    overlay.addEventListener("click", closeModal);
+    modal.addEventListener("click",(e)=>e.stopPropagation());
+    closeModalBtn.addEventListener("click", closeModal);
+
+    /* ========= UTIL: PIN BOXES ========= */
+    function makePinBoxes(){
+      const wrap = document.createElement("div");
+      wrap.className = "pinBoxes";
+      const inputs = [];
+      for(let i=0;i<4;i++){
+        const inp = document.createElement("input");
+        inp.className = "pinBox";
+        inp.inputMode = "numeric";
+        inp.maxLength = 1;
+        inp.addEventListener("input", () => {
+          inp.value = inp.value.replace(/\D/g,"").slice(0,1);
+          if(inp.value && inputs[i+1]) inputs[i+1].focus();
+        });
+        inp.addEventListener("keydown", (ev) => {
+          if(ev.key==="Backspace" && !inp.value && inputs[i-1]) inputs[i-1].focus();
+        });
+        inputs.push(inp);
+        wrap.appendChild(inp);
+      }
+      wrap.getPin = () => inputs.map(x=>x.value).join("");
+      wrap.focusFirst = () => inputs[0]?.focus();
+      return wrap;
+    }
+
+    /* ========= MANAGE PIN FLOW ========= */
+    function openManagePinMenu(){
+      const menu = document.createElement("div");
+      menu.className = "pinMenu";
+
+      const items = [
+        { label:"Change PIN", icon:"changePin", action:"CHANGE" },
+        { label:"Block PIN (Lost)", icon:"pinBar", action:"BLOCK" },
+        { label:"Unblock PIN (Wrong Attempts)", icon:"pinUnbar", action:"UNBLOCK" }
+      ];
+
+      items.forEach(it => {
+        const row = document.createElement("div");
+        row.className = "pinItem";
+        row.innerHTML = `
+          <div class="pinLeftIcon">${ICONS[it.icon]}</div>
+          <div>${it.label}</div>
+        `;
+        row.addEventListener("click", () => {
+          if(it.action === "CHANGE"){
+            showSimpleConfirm("Change PIN", "Your eDahab PIN has been changed successfully.");
+          }else{
+            openPinActionForm(it.action);
+          }
+        });
+        menu.appendChild(row);
+      });
+
+      openModal("Manage PIN", menu);
+    }
+
+    function openPinActionForm(action){
+      const title = action === "BLOCK" ? "Block PIN (Lost)" : "Unblock PIN (Wrong Attempts)";
+      const form = document.createElement("div");
+      form.className = "form";
+
+      const walletWrap = document.createElement("div");
+      walletWrap.innerHTML = `
+        <div class="fieldLabel">Select your wallet</div>
+        <select class="select" id="pinWallet">
+          <option value="" selected disabled>Select</option>
+          <option>65xxxxxxx</option>
+          <option>62xxxxxxx</option>
+          <option>66xxxxxxx</option>
+        </select>
+      `;
+
+      const pinWrap = document.createElement("div");
+      pinWrap.innerHTML = `<div class="fieldLabel">Enter your eDahab PIN</div>`;
+      const pinBoxes = makePinBoxes();
+      pinWrap.appendChild(pinBoxes);
+
+      const hint = document.createElement("div");
+      hint.className = "hint";
+
+      const btn = document.createElement("button");
+      btn.className = "btnPrimary";
+      btn.textContent = "Proceed";
+
+      btn.addEventListener("click", () => {
+        hint.style.display = "none";
+        const wallet = walletWrap.querySelector("#pinWallet").value;
+        const pin = pinBoxes.getPin();
+        if(!wallet){
+          hint.style.display="block";
+          hint.textContent="Please select your wallet.";
+          return;
+        }
+        if(!/^\d{4}$/.test(pin)){
+          hint.style.display="block";
+          hint.textContent="Please enter a valid 4-digit eDahab PIN.";
+          return;
+        }
+        showPinConfirmation(action);
+      });
+
+      form.append(walletWrap, pinWrap, btn, hint);
+      openModal(title, form);
+      setTimeout(()=>pinBoxes.focusFirst(), 50);
+    }
+
+    function showPinConfirmation(action){
+      const box = document.createElement("div");
+      box.className = "form";
+
+      const msg = (action==="BLOCK")
+        ? "Your eDahab PIN has blocked successfully."
+        : "Your eDahab PIN has unblocked successfully.";
+
+      const extra = (action==="BLOCK")
+        ? `<div style="margin-top:8px;color:var(--muted);font-weight:var(--fw-med);">
+             Contact DahabPlus Support to unblock your pin in the future
+           </div>`
+        : "";
+
+      const note = document.createElement("div");
+      note.className = "hint";
+      note.style.display = "block";
+      note.innerHTML = `
+        <div class="confirmRow">
+          <div class="tickIcon">${ICONS.tick}</div>
+          <div>
+            <div style="font-weight:var(--fw-heavy);margin-bottom:4px;">Success</div>
+            <div>${msg}</div>
+            ${extra}
+          </div>
+        </div>
+      `;
+
+      const done = document.createElement("button");
+      done.className = "btnPrimary";
+      done.textContent = "Done";
+      done.addEventListener("click", closeModal);
+
+      box.append(note, done);
+      openModal("Confirmation", box);
+    }
+
+    function showSimpleConfirm(title, text){
+      const box = document.createElement("div");
+      box.className = "form";
+
+      const note = document.createElement("div");
+      note.className = "hint";
+      note.style.display="block";
+      note.innerHTML = `
+        <div class="confirmRow">
+          <div class="tickIcon">${ICONS.tick}</div>
+          <div>
+            <div style="font-weight:var(--fw-heavy);margin-bottom:4px;">Success</div>
+            <div>${text}</div>
+          </div>
+        </div>
+      `;
+
+      const done = document.createElement("button");
+      done.className = "btnPrimary";
+      done.textContent = "Done";
+      done.addEventListener("click", closeModal);
+
+      box.append(note, done);
+      openModal(title, box);
+    }
+
+    /* ========= FREEZE FLOW (NO DATE/TIME FIELD) ========= */
+    function pad(n){ return String(n).padStart(2,"0"); }
+    function fmtDT(d){
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+    function formatAmount(amount, currency, context){
+      if(context==="account") return `$ ${Number(amount).toFixed(2)}`;
+      if(currency==="USD") return `$ ${Number(amount).toFixed(2)}`;
+      return `${Math.round(Number(amount)).toLocaleString("en-US")} SLSH`;
+    }
+
+    function openFreezeForm(context){
+      const form = document.createElement("div");
+      form.className = "form";
+
+      const initiators = (context==="edahab")
+        ? ["65xxxxxxx","62xxxxxxx","66xxxxxxx"]
+        : ["DMT Account • HRGDxxxx","DBI Account • 102xxxxxx"];
+
+      const initiatorBlock = document.createElement("div");
+      initiatorBlock.innerHTML = `
+        <div class="fieldLabel">Select Initiator</div>
+        <select class="select" id="fzInitiator">
+          <option value="" selected disabled>Select</option>
+          ${initiators.map(x=>`<option value="${x}">${x}</option>`).join("")}
+        </select>
+      `;
+
+      const rxTypeBlock = document.createElement("div");
+      rxTypeBlock.innerHTML = `
+        <div class="fieldLabel">Receiver Type</div>
+        <select class="select" id="fzReceiverType">
+          <option value="" selected disabled>Select</option>
+          <option value="Subscriber">Subscriber</option>
+          <option value="Merchant">Merchant</option>
+        </select>
+      `;
+
+      const rxBlock = document.createElement("div");
+      rxBlock.innerHTML = `
+        <div class="fieldLabel" id="fzRxLabel">Receiver</div>
+        <input class="textInput" id="fzReceiver" placeholder="Select Receiver Type first" disabled />
+      `;
+
+      let currencyBlock = null;
+      if(context==="edahab"){
+        currencyBlock = document.createElement("div");
+        currencyBlock.innerHTML = `
+          <div class="fieldLabel">Currency</div>
+          <select class="select" id="fzCurrency">
+            <option value="" selected disabled>Select</option>
+            <option value="USD">USD</option>
+            <option value="SLSH">SLSH</option>
+          </select>
+        `;
+      }
+
+      const amtBlock = document.createElement("div");
+      amtBlock.innerHTML = `
+        <div class="fieldLabel">Enter Amount</div>
+        <input class="textInput" id="fzAmount" inputmode="decimal" placeholder="Enter amount" />
+      `;
+
+      const btn = document.createElement("button");
+      btn.className = "btnPrimary";
+      btn.textContent = "Check Transaction (Last 72 hours)";
+
+      const hint = document.createElement("div");
+      hint.className = "hint";
+
+      const rxTypeEl = rxTypeBlock.querySelector("#fzReceiverType");
+      const rxLabelEl = rxBlock.querySelector("#fzRxLabel");
+      const rxEl = rxBlock.querySelector("#fzReceiver");
+
+      rxTypeEl.addEventListener("change", () => {
+        rxEl.disabled = false;
+        rxEl.value = "";
+        if(rxTypeEl.value==="Subscriber"){
+          rxLabelEl.textContent = "Subscriber Number";
+          rxEl.placeholder = "Must start with 65, 62, or 66";
+          rxEl.inputMode = "numeric";
+        }else{
+          rxLabelEl.textContent = "Merchant Code";
+          rxEl.placeholder = "Enter Merchant Code";
+          rxEl.inputMode = "text";
+        }
+      });
+
+      rxEl.addEventListener("input", () => {
+        if(rxTypeEl.value==="Subscriber"){
+          rxEl.value = rxEl.value.replace(/\D/g,"");
+        }
+      });
+
+      const amtEl = amtBlock.querySelector("#fzAmount");
+      amtEl.addEventListener("input", () => {
+        amtEl.value = amtEl.value.replace(/[^0-9.]/g,"");
+        const parts = amtEl.value.split(".");
+        if(parts.length>2) amtEl.value = parts[0]+"."+parts.slice(1).join("");
+      });
+
+      btn.addEventListener("click", () => {
+        hint.style.display="none";
+        hint.textContent="";
+
+        const initiator = initiatorBlock.querySelector("#fzInitiator").value;
+        const rxType = rxTypeEl.value;
+        const receiver = (rxEl.value||"").trim();
+        const amountStr = (amtEl.value||"").trim();
+
+        const currency = (context==="edahab")
+          ? (currencyBlock.querySelector("#fzCurrency").value)
+          : "USD";
+
+        if(!initiator){ showHint(hint,"Please select Initiator."); return; }
+        if(!rxType){ showHint(hint,"Please select Receiver Type."); return; }
+        if(!receiver){ showHint(hint, rxType==="Subscriber" ? "Please enter Subscriber number." : "Please enter Merchant code."); return; }
+        if(rxType==="Subscriber" && !/^(65|62|66)\d+$/.test(receiver)){
+          showHint(hint,"Subscriber number must start with 65, 62, or 66.");
+          return;
+        }
+        if(context==="edahab" && !currency){ showHint(hint,"Please select Currency."); return; }
+        if(!amountStr || isNaN(parseFloat(amountStr))){ showHint(hint,"Please enter a valid Amount."); return; }
+
+        const amount = parseFloat(amountStr);
+
+        if(currency==="USD" && amount < 3){ showHint(hint,"Minimum freeze amount is $3."); return; }
+        if(currency==="SLSH" && amount < 30000){ showHint(hint,"Minimum freeze amount is 30,000 SLSH."); return; }
+
+        const now = new Date();
+        const rxLabel = (rxType==="Merchant") ? `Merchant • ${receiver}` : `Subscriber • ${receiver}`;
+        const txs = [
+          { date: new Date(now.getTime() - 35*60*1000), receiver: rxLabel, amount, currency, context },
+          { date: new Date(now.getTime() - 95*60*1000), receiver: rxLabel, amount, currency, context }
+        ];
+
+        openFreezeResults({ rxType, receiver, currency, context, txs });
+      });
+
+      form.append(initiatorBlock, rxTypeBlock, rxBlock);
+      if(currencyBlock) form.append(currencyBlock);
+      form.append(amtBlock, btn, hint);
+
+      openModal("Freeze wrong transfer", form);
+    }
+
+    function showHint(el, msg){
+      el.style.display="block";
+      el.textContent = msg;
+    }
+
+    function openFreezeResults(payload){
+      const box = document.createElement("div");
+      box.className = "freezeList";
+
+      const info = document.createElement("div");
+      info.className = "hint";
+      info.style.display="block";
+      info.innerHTML = `
+        <div style="font-weight:var(--fw-heavy);margin-bottom:6px;">Found Transactions (Last 72 hours)</div>
+        <div style="color:var(--muted);font-weight:var(--fw-med);">
+          Receiver: ${payload.rxType} • ${payload.receiver}<br/>
+          ${payload.context==="edahab" ? `Currency: ${payload.currency}<br/>` : ""}
+        </div>
+      `;
+
+      const listWrap = document.createElement("div");
+      listWrap.innerHTML = payload.txs.map((t, idx) => `
+        <label class="freezeTx">
+          <div class="freezeTxLeft">
+            <div class="freezeTxTop">${formatAmount(t.amount, t.currency, t.context)}</div>
+            <div class="freezeTxMeta">Date & Time: ${fmtDT(t.date)}</div>
+            <div class="freezeTxMeta">Receiver: ${t.receiver}</div>
+          </div>
+          <input class="freezeRadio" type="radio" name="fzTx" value="${idx}">
+        </label>
+      `).join("");
+
+      const selectBtn = document.createElement("button");
+      selectBtn.className = "btnPrimary";
+      selectBtn.textContent = "Select Transaction";
+
+      const hint = document.createElement("div");
+      hint.className = "hint";
+
+      selectBtn.addEventListener("click", () => {
+        hint.style.display="none";
+        hint.textContent="";
+        const checked = document.querySelector('input[name="fzTx"]:checked');
+        if(!checked){ showHint(hint, "Please select a transaction."); return; }
+        const chosen = payload.txs[parseInt(checked.value,10)];
+        openFreezePinStep(chosen);
+      });
+
+      box.append(info, listWrap, selectBtn, hint);
+      openModal("Transaction Details", box);
+    }
+
+    function openFreezePinStep(tx){
+      const box = document.createElement("div");
+      box.className = "form";
+
+      const summary = document.createElement("div");
+      summary.className = "hint";
+      summary.style.display="block";
+      summary.innerHTML = `
+        <div style="font-weight:var(--fw-heavy);margin-bottom:6px;">Selected Transaction</div>
+        <div style="color:var(--muted);font-weight:var(--fw-med);">
+          Date & Time: ${fmtDT(tx.date)}<br/>
+          Amount: ${formatAmount(tx.amount, tx.currency, tx.context)}<br/>
+          Receiver: ${tx.receiver}
+        </div>
+      `;
+
+      const pinWrap = document.createElement("div");
+      pinWrap.innerHTML = `<div class="fieldLabel">Enter your PIN</div>`;
+      const pinBoxes = makePinBoxes();
+      pinWrap.appendChild(pinBoxes);
+
+      const btn = document.createElement("button");
+      btn.className = "btnPrimary";
+      btn.textContent = "Freeze";
+
+      const hint = document.createElement("div");
+      hint.className = "hint";
+
+      btn.addEventListener("click", () => {
+        hint.style.display="none";
+        hint.textContent="";
+        const pin = pinBoxes.getPin();
+        if(!/^\d{4}$/.test(pin)){
+          showHint(hint,"Please enter a valid 4-digit PIN.");
+          return;
+        }
+        openFreezeConfirmation(tx);
+      });
+
+      box.append(summary, pinWrap, btn, hint);
+      openModal("Enter PIN", box);
+      setTimeout(()=>pinBoxes.focusFirst(), 50);
+    }
+
+    function openFreezeConfirmation(tx){
+      const box = document.createElement("div");
+      box.className = "form";
+
+      const msg = document.createElement("div");
+      msg.className = "hint";
+      msg.style.display="block";
+      msg.innerHTML = `
+        <div class="confirmRow">
+          <div class="tickIcon">${ICONS.tick}</div>
+          <div>
+            <div style="font-weight:var(--fw-heavy);margin-bottom:4px;">Transaction Frozen</div>
+            <div>This amount (${formatAmount(tx.amount, tx.currency, tx.context)}) has been Frozen from (${tx.receiver}), contact DahabPlus Support to Follow up with Refund Procedure.</div>
+          </div>
+        </div>
+      `;
+
+      const done = document.createElement("button");
+      done.className = "btnPrimary";
+      done.textContent = "Done";
+      done.addEventListener("click", closeModal);
+
+      box.append(msg, done);
+      openModal("Confirmation", box);
+    }
+
+    /* ========= GROUP GRID ========= */
+    function openGroup(key){
+      const group = GROUPS[key];
+      if(!group) return;
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      group.features.forEach(f => {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+
+        // ✅ Make inactive feature not clickable (Change PIN in Account Services)
+        if(f.inactive){
+          tile.style.opacity = "0.55";
+          tile.style.pointerEvents = "none";
+        }
+
+        tile.innerHTML = `
+          <div class="tileCircle" style="background:${f.color}">
+            ${ICONS[f.icon] || ICONS.statement}
+          </div>
+          <div class="tileName">${f.name}</div>
+        `;
+
+        tile.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+
+          if(f.name === "Manage PIN"){
+            openManagePinMenu();
+            return;
+          }
+          if(f.name === "Freeze wrong transfer"){
+            openFreezeForm(key === "account" ? "account" : "edahab");
+            return;
+          }
+          if(f.name === "Currency Exchange"){
+            showSimpleConfirm("Currency Exchange", "Currency exchange action completed successfully.");
+            return;
+          }
+
+          showSimpleConfirm(f.name, `Action completed successfully.`);
+        });
+
+        grid.appendChild(tile);
+      });
+
+      openModal(group.title, grid);
+      closeMore();
+    }
+
+    document.querySelectorAll(".groupBtn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openGroup(btn.getAttribute("data-group"));
+      });
+    });
+
+    /* Quick action shortcuts */
+    document.getElementById("qaMerchant").addEventListener("click", ()=>openGroup("edahab"));
+    document.getElementById("qaSubscriber").addEventListener("click", ()=>openGroup("edahab"));
+  </script>
+</body>
+</html>
